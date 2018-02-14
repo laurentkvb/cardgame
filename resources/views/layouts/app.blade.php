@@ -41,7 +41,7 @@
             margin-left: 2px;
             margin-right: 2px;
             margin-bottom: 2px;
-            height: 300px; /* Should be removed. Only for demonstration */
+            height: 350px; /* Should be removed. Only for demonstration */
         }
 
         /* Clear floats after the columns */

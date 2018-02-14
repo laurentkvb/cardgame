@@ -25,10 +25,39 @@ Route::get('/card/collection', function () {
         ->orderBy('id', 'desc')
         ->get();
 
+    $notification = "";
+
     return view('card_collection', [
-        'cards' => $cards
+        'cards' => $cards,
+        'notification' => $notification
+
     ]);
 });
+
+// /**
+//  * Display All Cards
+//  *//*geef nummber*/
+Route::post('/card/collection/{card_id}', function ($card_id) {
+
+    DB::table('user_cards')->insert(
+        ['user_id' => 1,
+            'card_id' => $card_id]
+    );
+
+    $cards = DB::table('cards')
+        ->select('cards.*')
+        ->orderBy('id', 'desc')
+        ->get();
+
+    $notification = "success";
+
+
+    return view('card_collection', [
+        'cards' => $cards,
+        'notification' => $notification
+    ]);
+});
+
 
 // /**
 //  * Display All cards
@@ -41,12 +70,12 @@ Route::get('/card/add', function () {
 Route::post('/card', function (Request $request) {
     $validator = Validator::make($request->all(), [
 //    $this->validate($request,[
-        'title' => 'required|max:100' ,
+        'title' => 'required|max:100',
         'color' => 'required|max:100',
         'value' => 'required|min:1|max:10',
         'description' => 'required|min:2|max:50',
         'type' => 'required|min:1',
-    ],[
+    ], [
         'title.required' => ' The title field is required.',
         'title.min' => ' The first name must be at least 2 characters.',
         'title.max' => ' The first name may not be greater than 30 characters.',
@@ -78,34 +107,58 @@ Route::post('/card', function (Request $request) {
 
 Route::get('/', function () {
     $cards = DB::table('user_cards')
-        ->join('cards', 'cards.id', '=', 'user_cards.id')
+        ->join('cards', 'cards.id', '=', 'user_cards.card_id')
         ->select('cards.*', 'user_cards.id', 'cards.color')
         ->where('user_cards.user_id', 1)
+        ->orderBy('user_cards.id', 'asc')
         ->get();
 
+    $notification = "";
+
     return view('my_cards', [
-        'cards' => $cards
+        'cards' => $cards,
+        'notification' => $notification
     ]);
 });
 
 Route::get('/card/deck', function () {
 
     $cards = DB::table('user_cards')
-        ->join('cards', 'cards.id', '=', 'user_cards.id')
+        ->join('cards', 'cards.id', '=', 'user_cards.card_id')
         ->select('cards.*', 'user_cards.id', 'cards.color')
         ->where('user_cards.user_id', 1)
+        ->orderBy('user_cards.id', 'asc')
         ->get();
 
+    $notification = "";
+
     return view('my_cards', [
-        'cards' => $cards
+        'cards' => $cards,
+        'notification' => $notification
+
     ]);
 });
 
-Route::delete('/card/{user_id}/{card_id}', function ($id, $card_id) {
+Route::delete('/card/{user_id}/{card_id}', function ($user_id, $relation_id) {
 //    User_card::findOrFail($id)->delete();
-    DB::table('user_cards')->where('user_id', '=', $id)
-        ->where('card_id', '=', $card_id)
+    DB::table('user_cards')
+        ->where('id', '=', $relation_id)
+        ->where('user_id', '=', $user_id)
         ->delete();
 
-    return redirect('/');
+    $cards = DB::table('user_cards')
+        ->join('cards', 'cards.id', '=', 'user_cards.card_id')
+        ->select('cards.*', 'user_cards.id', 'cards.color')
+        ->where('user_cards.user_id', 1)
+        ->orderBy('cards.created_at', 'asc')
+        ->get();
+
+    $notification = "success_delete";
+
+
+    return view('my_cards', [
+        'cards' => $cards,
+        'notification' => $notification
+    ]);
+
 });

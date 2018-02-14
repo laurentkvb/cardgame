@@ -12,6 +12,8 @@
                     </div>
 
                     <div class="panel-body">
+                        @include('common.notification')
+
                         <div class="row" align="center">
                             <tbody>
                             @foreach ($cards as $card)
@@ -25,6 +27,7 @@
                                         overflow:scroll;">
                                     <h3><b>{{$card->title}}</b></h3>
                                     <p><b>Power</b><br/> {{$card->value}}</p>
+                                    <p><b>Description</b><br/>{{$card->description}} </p>
                                     <td> <!-- Card Delete Button -->
                                         {{--In the app user with id 1, their cards are displayed and in the application--}}
                                         {{--we use his account as example, in which we delete cards with--}}
@@ -33,7 +36,7 @@
                                             {{ method_field('DELETE') }}
 
                                             <button type="submit" class="btn btn-danger">
-                                                <i class="fa fa-btn fa-trash"></i>Delete Card
+                                                <i class="fa fa-btn fa-trash"></i>Delete Card From Deck
                                             </button>
                                         </form>
                                     </td>
