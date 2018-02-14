@@ -26,7 +26,8 @@
                                         background-color:#475;
                                         overflow:scroll;">
                                     <h3><b>{{$card->title}}</b></h3>
-                                    <p><b>Power</b><br/> {{$card->value}}</p>
+                                    <p><b>ID</b><br/> {{$card->id}}</p>
+{{--                                    <p><b>Power</b><br/> {{$card->value}}</p>--}}
                                     <p><b>Description</b><br/>{{$card->description}} </p>
                                     <td> <!-- Card Delete Button -->
                                         {{--In the app user with id 1, their cards are displayed and in the application--}}
@@ -43,6 +44,9 @@
                                 </div>
                             @endforeach
                             </tbody>
+                        </div>
+                        <div class="text-center">
+                            {!! $cards->links() !!}
                         </div>
                     </div>
 

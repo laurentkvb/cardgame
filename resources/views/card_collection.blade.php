@@ -29,9 +29,7 @@
                                     <h3><b>{{$card->title}}</b></h3>
                                     <p><b>Power</b><br/> {{$card->value}}</p>
                                     <p><b>Description</b><br/>{{$card->description}} </p>
-                                    <td> <!-- Card Delete Button -->
-                                        {{--In the app user with id 1, their cards are displayed and in the application--}}
-                                        {{--we use his account as example, in which we delete cards with--}}
+                                    <td>
                                         <form action="{{ url('card/collection/'.$card->id) }}" method="POST">
                                             {{ csrf_field() }}
                                             {{ method_field('POST') }}
@@ -44,6 +42,10 @@
                                 </div>
                             @endforeach
                             </tbody>
+
+                        </div>
+                        <div class="text-center">
+                            {!! $cards->links() !!}
                         </div>
                     </div>
 

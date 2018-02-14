@@ -32,7 +32,7 @@
                             <label for="card-name" class="col-sm-3 control-label">Color</label>
                             <div class="col-sm-6">
                                 <input type="color" name="color" id="card-color" class="form-control"
-                                       value="{{ old('card') }}">
+                                       value="{{ old('card') }}" max="10" min="1">
                             </div>
 
 

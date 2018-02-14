@@ -20,37 +20,26 @@ use Illuminate\Http\Request;
 //  * Display All Cards
 //  */
 Route::get('/card/collection', function () {
-    $cards = DB::table('cards')
-        ->select('cards.*')
-        ->orderBy('id', 'desc')
-        ->get();
+    $cards = Card::paginate(9);
 
     $notification = "";
 
     return view('card_collection', [
         'cards' => $cards,
         'notification' => $notification
-
     ]);
 });
 
 // /**
 //  * Display All Cards
-//  *//*geef nummber*/
-Route::post('/card/collection/{card_id}', function ($card_id) {
+ Route::post('/card/collection/{card_id}', function ($card_id) {
 
     DB::table('user_cards')->insert(
         ['user_id' => 1,
             'card_id' => $card_id]
     );
-
-    $cards = DB::table('cards')
-        ->select('cards.*')
-        ->orderBy('id', 'desc')
-        ->get();
-
+     $cards = Card::paginate(9);
     $notification = "success";
-
 
     return view('card_collection', [
         'cards' => $cards,
@@ -58,12 +47,13 @@ Route::post('/card/collection/{card_id}', function ($card_id) {
     ]);
 });
 
+//|--------------------------------------------------------------------------
 
 // /**
 //  * Display All cards
 //  */
 Route::get('/card/add', function () {
-    return view('add_card');
+    return view('card_add');
 });
 
 
@@ -104,6 +94,38 @@ Route::post('/card', function (Request $request) {
 
     return redirect('/card/collection');
 });
+//|--------------------------------------------------------------------------
+
+
+Route::delete('/card/{user_id}/{card_id}', function ($card_id,$user_id) {
+    DB::table('user_cards')
+        ->where('id', '=', $card_id)
+        ->where('user_id', '=', $user_id)
+        ->delete();
+
+    $cards = DB::table('user_cards')
+        ->join('cards', 'cards.id', '=', 'user_cards.card_id')
+        ->select('cards.*', 'user_cards.id', 'cards.color')
+        ->where('user_cards.user_id', 1)
+        ->orderBy('cards.created_at', 'asc')
+        ->get();
+
+//        ->paginate(9);
+
+
+    $notification = "success_delete";
+
+
+    return view('card_deck', [
+        'cards' => $cards,
+        'notification' => $notification
+    ]);
+
+//    return redirect('/card/deck', 302, ['notification' => $notification]);
+
+
+});
+
 
 Route::get('/', function () {
     $cards = DB::table('user_cards')
@@ -111,11 +133,11 @@ Route::get('/', function () {
         ->select('cards.*', 'user_cards.id', 'cards.color')
         ->where('user_cards.user_id', 1)
         ->orderBy('user_cards.id', 'asc')
-        ->get();
+        ->paginate(9);
 
     $notification = "";
 
-    return view('my_cards', [
+    return view('card_deck', [
         'cards' => $cards,
         'notification' => $notification
     ]);
@@ -128,37 +150,14 @@ Route::get('/card/deck', function () {
         ->select('cards.*', 'user_cards.id', 'cards.color')
         ->where('user_cards.user_id', 1)
         ->orderBy('user_cards.id', 'asc')
-        ->get();
+        ->paginate(9);
+//    ->get();
 
     $notification = "";
 
-    return view('my_cards', [
+    return view('card_deck', [
         'cards' => $cards,
         'notification' => $notification
 
     ]);
-});
-
-Route::delete('/card/{user_id}/{card_id}', function ($user_id, $relation_id) {
-//    User_card::findOrFail($id)->delete();
-    DB::table('user_cards')
-        ->where('id', '=', $relation_id)
-        ->where('user_id', '=', $user_id)
-        ->delete();
-
-    $cards = DB::table('user_cards')
-        ->join('cards', 'cards.id', '=', 'user_cards.card_id')
-        ->select('cards.*', 'user_cards.id', 'cards.color')
-        ->where('user_cards.user_id', 1)
-        ->orderBy('cards.created_at', 'asc')
-        ->get();
-
-    $notification = "success_delete";
-
-
-    return view('my_cards', [
-        'cards' => $cards,
-        'notification' => $notification
-    ]);
-
 });
