@@ -1,5 +1,5 @@
 @if($notification != NULL)
-    @if ($notification == "success")
+    @if ($notification == "success_add")
         <!-- Form Error List -->
         <div class="alert alert-success">
             <strong>You have succesfully added a card to your deck</strong>
