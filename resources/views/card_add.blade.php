@@ -41,7 +41,7 @@
 
                             <label for="card-name" class="col-sm-3 control-label">Value</label>
                             <div class="col-sm-6">
-                                <input type="number" name="value" id="card-number" class="form-control"
+                                <input type="number" max="10" min="1" name="value" id="card-number" class="form-control"
                                        value="{{ old('card') }}">
                             </div>
 

@@ -16,6 +16,8 @@ use Illuminate\Http\Request;
 */
 
 
+
+
 // /**
 //  * Display All Cards
 //  */
@@ -32,13 +34,13 @@ Route::get('/card/collection', function () {
 
 // /**
 //  * Display All Cards
- Route::post('/card/collection/{card_id}', function ($card_id) {
+Route::post('/card/collection/{card_id}', function ($card_id) {
 
     DB::table('user_cards')->insert(
         ['user_id' => 1,
             'card_id' => $card_id]
     );
-     $cards = Card::paginate(9);
+    $cards = Card::paginate(9);
     $notification = "success";
 
     return view('card_collection', [
@@ -97,34 +99,6 @@ Route::post('/card', function (Request $request) {
 //|--------------------------------------------------------------------------
 
 
-Route::delete('/card/{user_id}/{card_id}', function ($card_id,$user_id) {
-    DB::table('user_cards')
-        ->where('id', '=', $card_id)
-        ->where('user_id', '=', $user_id)
-        ->delete();
-
-    $cards = DB::table('user_cards')
-        ->join('cards', 'cards.id', '=', 'user_cards.card_id')
-        ->select('cards.*', 'user_cards.id', 'cards.color')
-        ->where('user_cards.user_id', 1)
-        ->orderBy('cards.created_at', 'asc')
-        ->get();
-
-//        ->paginate(9);
-
-
-    $notification = "success_delete";
-
-
-    return view('card_deck', [
-        'cards' => $cards,
-        'notification' => $notification
-    ]);
-
-//    return redirect('/card/deck', 302, ['notification' => $notification]);
-
-
-});
 
 
 Route::get('/', function () {
@@ -143,6 +117,35 @@ Route::get('/', function () {
     ]);
 });
 
+
+
+
+Route::delete('/card/deck/{user_id}/{user_card_id}', function ($user_id, $user_card_id) {
+
+    DB::table('user_cards')
+        ->where('id', '=', $user_card_id)
+        ->where('user_id', '=', $user_id)
+        ->delete();
+
+    $cards = DB::table('user_cards')
+        ->join('cards', 'cards.id', '=', 'user_cards.card_id')
+        ->select('cards.*', 'user_cards.id', 'cards.color')
+        ->where('user_cards.user_id', 1)
+        ->orderBy('cards.created_at', 'asc')
+//        ->get();
+        ->paginate(9);
+
+
+    $notification = "success_delete";
+
+        return view('card_deck', [
+            'cards' => $cards,
+            'notification' => $notification
+        ]);
+
+
+});
+
 Route::get('/card/deck', function () {
 
     $cards = DB::table('user_cards')
@@ -158,6 +161,6 @@ Route::get('/card/deck', function () {
     return view('card_deck', [
         'cards' => $cards,
         'notification' => $notification
-
     ]);
+
 });
